@@ -1,5 +1,10 @@
+import {
+  getTodosPosts,
+  createNewPost,
+  updatePost,
+} from "../models/postModel.js";
 import fs from "fs";
-import { getTodosPosts, createNewPost } from "../models/postModel.js";
+import gerarDescricaoComGemini from "../services/geminiService.js";
 
 export async function listarPosts(req, res) {
   const posts = await getTodosPosts();
@@ -28,6 +33,23 @@ export async function uploadImg(req, res) {
     const createdPost = await createNewPost(newPost);
     const imgAtualized = `uploads/${createdPost.insertedId}.png`;
     fs.renameSync(req.file.path, imgAtualized);
+    res.status(200).json(createdPost);
+  } catch (erro) {
+    console.error(erro.message);
+    res.status(500).json({});
+  }
+}
+
+export async function updateNewPost(req, res) {
+  const id = req.params.id;
+  const urlImg = `http://localhost:3000/${id}.png`;
+  const post = {
+    imgUrl: urlImg,
+    descricao: req.body.descricao,
+    alt: req.body.alt,
+  };
+  try {
+    const createdPost = await updatePost(id, post);
     res.status(200).json(createdPost);
   } catch (erro) {
     console.error(erro.message);

@@ -4,6 +4,7 @@ import {
   listarPosts,
   postNewPost,
   uploadImg,
+  updateNewPost,
 } from "../controllers/postController.js";
 
 const storage = multer.diskStorage({
@@ -23,6 +24,7 @@ const routes = (app) => {
   app.get("/posts", listarPosts);
   app.post("/post", postNewPost);
   app.post("/upload", upload.single("imagem"), uploadImg);
+  app.put("/upload/:id", updateNewPost);
 };
 
 export default routes;
